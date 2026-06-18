@@ -1,0 +1,37 @@
+# Node
+node_modules/
+npm-debug.log
+build/
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+
+# Database
+*.db
+*.sqlite
+
+# Environment
+.env
+appsettings.Development.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# SUMO outputs
+*.xml.gz
+tripinfos.xml
+edgeData.xml
+stopinfos.xml
+vehroutes.xml
+trips.trips.xml.errorlog
