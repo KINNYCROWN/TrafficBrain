@@ -35,3 +35,13 @@ edgeData.xml
 stopinfos.xml
 vehroutes.xml
 trips.trips.xml.errorlog
+
+# Local settings with sensitive data - never commit
+appsettings.Local.json
+appsettings.*.json
+!appsettings.json
+
+# Secrets
+*.env
+.env.local
+.env.production

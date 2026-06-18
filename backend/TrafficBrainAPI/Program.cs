@@ -9,6 +9,12 @@ using TrafficBrainAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load local settings (not committed to GitHub)
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 // ─────────────────────────────────────────
 // SERVICES
 // ─────────────────────────────────────────
