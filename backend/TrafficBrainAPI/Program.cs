@@ -114,6 +114,10 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IWeatherService, WeatherService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddHttpClient<WeatherService>();
+builder.Services.AddHttpClient<SmsService>();
 
 // CORS
 builder.Services.AddCors(options =>

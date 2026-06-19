@@ -171,6 +171,18 @@ export const analyticsAPI = {
 };
 
 // ─────────────────────────────────────────
+// WEATHER
+// ─────────────────────────────────────────
+export const weatherAPI = {
+  getAll: () =>
+    api.get('/api/weather/all'),
+  getCity: (city) =>
+    api.get(`/api/weather/${city}`),
+  getSignalAdjustment: (city) =>
+    api.get(`/api/weather/signal/${city}`)
+};
+
+// ─────────────────────────────────────────
 // SYSTEM
 // ─────────────────────────────────────────
 export const systemAPI = {

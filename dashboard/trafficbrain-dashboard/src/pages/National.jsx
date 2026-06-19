@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
-import { junctionsAPI } from '../services/api';
+import { junctionsAPI, weatherAPI } from '../services/api';
 import signalRService from '../services/signalr';
 import Layout from '../components/Layout';
 import 'leaflet/dist/leaflet.css';
@@ -33,6 +33,7 @@ export default function National() {
   const [selectedDistrict, setSelectedDistrict] = useState('All');
   const [currentTime, setCurrentTime] = useState(new Date());
   const navigate = useNavigate();
+  const [weather, setWeather] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -42,9 +43,11 @@ export default function National() {
   useEffect(() => {
     junctionsAPI.getAll().then(res => setJunctions(res.data)).catch(console.error);
     junctionsAPI.getStats().then(res => setStats(res.data)).catch(console.error);
+    weatherAPI.getAll().then(res => setWeather(res.data)).catch(console.error);
     const interval = setInterval(() => {
       junctionsAPI.getStats().then(res => setStats(res.data)).catch(console.error);
-    }, 10000);
+      weatherAPI.getAll().then(res => setWeather(res.data)).catch(console.error);
+    }, 300000); // refresh weather every 5 minutes
     return () => clearInterval(interval);
   }, []);
 
@@ -318,6 +321,32 @@ export default function National() {
               </div>
             )}
 
+            {/* Weather Panel */}
+          {weather.length > 0 && (
+            <div style={styles.panelSection}>
+              <h3 style={styles.sectionTitle}>🌤️ Live Weather</h3>
+              {weather.map((w, i) => (
+                <div key={i} style={styles.weatherItem}>
+                  <div style={styles.weatherLeft}>
+                    <span style={styles.weatherIcon}>{w.conditionIcon}</span>
+                    <div>
+                      <span style={styles.weatherCity}>{w.city}</span>
+                      <span style={styles.weatherCondition}>{w.condition}</span>
+                    </div>
+                  </div>
+                  <div style={styles.weatherRight}>
+                    <span style={styles.weatherTemp}>{w.temperature}°C</span>
+                    {w.recommendedGreenExtension > 0 && (
+                      <span style={styles.weatherAlert}>
+                        +{w.recommendedGreenExtension}s
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           </div>
         </div>
       </div>
@@ -392,6 +421,53 @@ const styles = {
     letterSpacing: '0.5px',
     marginTop: '2px',
     textAlign: 'center'
+  },
+  weatherItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '8px',
+    background: 'rgba(255,255,255,0.02)',
+    borderRadius: '6px',
+    marginBottom: '6px'
+  },
+  weatherLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  weatherIcon: {
+    fontSize: '20px'
+  },
+  weatherCity: {
+    display: 'block',
+    fontSize: '12px',
+    fontWeight: '600',
+    color: '#e5e7eb'
+  },
+  weatherCondition: {
+    display: 'block',
+    fontSize: '10px',
+    color: '#6b7280'
+  },
+  weatherRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: '2px'
+  },
+  weatherTemp: {
+    fontSize: '14px',
+    fontWeight: '700',
+    color: '#4da6ff'
+  },
+  weatherAlert: {
+    fontSize: '10px',
+    color: '#f97316',
+    background: 'rgba(249,115,22,0.1)',
+    padding: '1px 6px',
+    borderRadius: '4px',
+    fontWeight: '700'
   },
   emergencyBanner: {
     background: 'linear-gradient(90deg, #7f1d1d, #991b1b)',
